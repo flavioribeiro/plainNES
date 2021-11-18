@@ -79,70 +79,6 @@ int init()
     return 0;
 }
 
-/*int initPPUWindow() {
-    PPUwindow = SDL_CreateWindow("plainNES - PPU Debugging",
-                50, 50,
-                (32*8 + 62 + 4 + 4)*SCREEN_SCALE,(16*8 + 4)*SCREEN_SCALE,
-                0);
-    
-    
-    PPUrenderer = SDL_CreateRenderer(PPUwindow, -1, 0);
-    SDL_RenderSetScale(PPUrenderer, SCREEN_SCALE, SCREEN_SCALE);
-    SDL_SetRenderDrawColor(PPUrenderer, 157, 161, 170, 255); 
-    SDL_RenderClear(PPUrenderer); //Fill with grey color by default
-
-    //Setup Pattern Table Textures
-    PTtexture0 = SDL_CreateTexture(PPUrenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 16*8, 16*8);
-    PTtexture1 = SDL_CreateTexture(PPUrenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, 16*8, 16*8);
-    rectPT0.x = 2;
-    rectPT0.y = 2;
-    rectPT0.h = 16*8;
-    rectPT0.w = 16*8;
-    rectPT1.x = 16*8 + 4;
-    rectPT1.y = 2;
-    rectPT1.h = 16*8;
-    rectPT1.w = 16*8;
-
-    for(int i=0; i<16*8 * 16*8; ++i) {
-        PTpixelMap[i] = 0xFF000000;
-    }
-
-    SDL_UpdateTexture(PTtexture0, NULL, PTpixelMap.data(), 16*8*4);
-    SDL_UpdateTexture(PTtexture1, NULL, PTpixelMap.data(), 16*8*4);
-    SDL_RenderCopy(PPUrenderer, PTtexture0, NULL, &rectPT0);
-    SDL_RenderCopy(PPUrenderer, PTtexture1, NULL, &rectPT1);
-
-    //Setup Palette Textures
-    //Each palette is 14x14 with 2 pixel borders for a total of 62x
-    for(int i=0; i<8; ++i) {
-        for(int j=0; j<4; ++j) {
-            PaletteRect[i][j].x = 262 + j*16;
-            PaletteRect[i][j].y = 2 + i*16;
-            PaletteRect[i][j].h = 14;
-            PaletteRect[i][j].w = 14;
-        }
-    }
-    for(int i=0; i<8; ++i) {
-        for(int j=0; j<4; ++j) {
-            uint32_t paletteARGB;
-            uint8_t paletteByte;
-            if(j == 0) {
-                paletteByte = NES::getPalette(0x3F00);
-            }
-            else {
-                paletteByte = NES::getPalette(0x3F00 + i*4 + j);
-            }
-            RENDER::convertNTSC2ARGB(&paletteARGB, &paletteByte, 1);
-            SDL_SetRenderDrawColor(PPUrenderer, (paletteARGB >> 16) & 0xFF, (paletteARGB >> 8) & 0xFF, paletteARGB & 0xFF, 255);
-            SDL_RenderFillRect(PPUrenderer, &PaletteRect[i][j]);
-        }
-    }
-    
-    SDL_RenderPresent(PPUrenderer);
-
-    return 0;
-}*/
-
 int initAudio() {
     audio_rb_idx = 0;
     audio_wb_idx = 0;
@@ -271,9 +207,7 @@ void update()
     NES::controller_state[1] = 0;
     
     updateMainWindow();
-    //if(debugPPU) {
-    //    updatePPUWindow();
-    //}
+    
     if(disableAudio == false)
         updateAudio();
 
@@ -289,35 +223,6 @@ void updateMainWindow() {
 
     mainDisplay.renderFrame();
 }
-
-/*void updatePPUWindow() {
-    std::array<std::array<uint8_t, 16*16*64>, 2> PTarrays = NES::getPatternTableBuffers();
-    RENDER::convertNTSC2ARGB(PTpixelMap.data(), PTarrays[0].data(), PTarrays[0].size());
-    SDL_UpdateTexture(PTtexture0, NULL, PTpixelMap.data(), 16*8*4);
-    RENDER::convertNTSC2ARGB(PTpixelMap.data(), PTarrays[1].data(), PTarrays[1].size());
-    SDL_UpdateTexture(PTtexture1, NULL, PTpixelMap.data(), 16*8*4);
-
-    SDL_RenderCopy(PPUrenderer, PTtexture0, NULL, &rectPT0);
-    SDL_RenderCopy(PPUrenderer, PTtexture1, NULL, &rectPT1);
-
-    for(int i=0; i<8; ++i) {
-        for(int j=0; j<4; ++j) {
-            uint32_t paletteARGB;
-            uint8_t paletteByte;
-            if(j == 0) {
-                paletteByte = NES::getPalette(0x3F00);
-            }
-            else {
-                paletteByte = NES::getPalette(0x3F00 + i*4 + j);
-            }
-            RENDER::convertNTSC2ARGB(&paletteARGB, &paletteByte, 1);
-            SDL_SetRenderDrawColor(PPUrenderer, (paletteARGB >> 16) & 0xFF, (paletteARGB >> 8) & 0xFF, paletteARGB & 0xFF, 255);
-            SDL_RenderFillRect(PPUrenderer, &PaletteRect[i][j]);
-        }
-    }
-
-    SDL_RenderPresent(PPUrenderer);
-}*/
 
 void updateAudio() {
     //Currently downsample using nearest neighbor method

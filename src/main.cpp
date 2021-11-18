@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	options.add_options()
 		("f,file", "File name", cxxopts::value<std::string>())
 		("PC", "Start program at specific memory address", cxxopts::value<uint16_t>())
-		("log", "enable logging", cxxopts::value<bool>()->default_value("false"))
+		("log", "enable logging", cxxopts::value<bool>()->default_value("true"))
 		("disableAudio", "Disables audio, unthrottling emulator", cxxopts::value<bool>()->default_value("false"))
 		("h,help", "Print usage")
 		;
